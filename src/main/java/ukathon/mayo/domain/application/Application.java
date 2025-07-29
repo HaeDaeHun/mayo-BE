@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import ukathon.mayo.domain.user.entity.BusinessProfile;
+import ukathon.mayo.domain.user.entity.SellerProfile;
 import ukathon.mayo.domain.user.entity.MarketerProfile;
 
 import java.time.LocalDate;
@@ -20,7 +20,7 @@ public class Application {
 
     @ManyToOne
     @JoinColumn(name = "business_id", nullable = false)
-    private BusinessProfile business;
+    private SellerProfile business;
 
     @ManyToOne
     @JoinColumn(name = "marketer_id", nullable = false)

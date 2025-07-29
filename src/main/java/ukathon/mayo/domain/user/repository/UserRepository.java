@@ -1,4 +1,4 @@
-package ukathon.mayo.domain.user;
+package ukathon.mayo.domain.user.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import ukathon.mayo.domain.user.entity.User;

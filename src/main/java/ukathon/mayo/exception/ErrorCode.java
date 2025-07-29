@@ -40,7 +40,7 @@ public enum ErrorCode {
     REVIEW_NOT_FOUND(404, "리뷰를 찾을 수 없습니다."),
 
     // 409 Conflict
-    CONFLICT(409, "리소스가 이미 존재합니다."),
+    ALREADY_EXISTS(409, "리소스가 이미 존재합니다."),
 
     // 500 Internal Server Error
     INTERNAL_ERROR(500, "서버 내부 오류입니다.");

@@ -83,7 +83,6 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    /* 여러 개의 보안 필터를 조합하여 하나의 보안 체인을 생성 */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -92,43 +91,53 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                // 요청 권한 설정 TODO: 수정할 것
-                .authorizeHttpRequests(request -> request
-                                .anyRequest().permitAll() // TODO: 개발을 위한 임시 허용이므로 실배포 전 수정 필요
-//                        .requestMatchers(AUTH_WHITELIST).permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/archives/share/{id}").permitAll()
-//                        .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-//                        .requestMatchers("/users/{userId:[0-9]+}/{section:statistics|keywords|growth|badges}").authenticated()
-//                        .requestMatchers("/users/{userId:[0-9]+}/{section:readingspace|character}").permitAll()
-//                        .requestMatchers("/users/{userId:[0-9]+}").permitAll()
-//                        .anyRequest().authenticated()
+
+                .authorizeHttpRequests(auth -> auth
+                        // 오류페이지, favicon, 정적 리소스
+                        .requestMatchers("/error", "/favicon.ico").permitAll()
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+
+                        // Swagger UI & OpenAPI JSON
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
+
+                        // 인증 없이 열어둘 API
+                        .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/logout").permitAll()
+
+                        // 나머지 요청은 모두 인증 필요
+                        .anyRequest().authenticated()
                 )
-                // X-Frame-Options: SAME ORIGIN으로 설정
-                .headers(header -> header
-                        .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+
+                // X-Frame-Options SAMEORIGIN
+                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+
+                // OAuth2 로그인
                 .oauth2Login(oauth -> oauth
                         .authorizationEndpoint(a -> a.baseUri("/oauth2/authorization"))
                         .redirectionEndpoint(r -> r.baseUri("/login/oauth2/code/*"))
                         .userInfoEndpoint(u -> u.userService(oAuth2UserService))
                         .successHandler(oAuth2SuccessHandler)
-
-     .failureHandler(oAuth2FailureHandler)
+                        .failureHandler(oAuth2FailureHandler)
                 )
-                // 인증 예외 핸들링
+
+                // 인증·인가 예외 처리
                 .exceptionHandling(e -> e
-                        .authenticationEntryPoint(customAuthenticationEntryPoint) // 인증되지 않은 사용자가 접근
-                        .accessDeniedHandler(customAccessDeniedHandler) // 인증은 되었지만 접근 권한이 없음
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler)
                 )
-                // 커스텀 로그아웃 사용 (refreshToken 삭제 위함)
-                .logout(logout -> logout
-                        .logoutUrl("/logout") // POST 요청
-                        .deleteCookies("refreshToken") // refreshToken이라는 이름의 쿠키 삭제
-                        .addLogoutHandler(customLogoutHandler) // 로그아웃 시 수행할 추가 동작
-                        .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK)) // 상태코드 200 반환 위함
-                )
-                .addFilterBefore(new JwtFilter(jwtUtil, cookieUtil), LogoutFilter.class)
 
+                // 커스텀 로그아웃
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .deleteCookies("refreshToken")
+                        .addLogoutHandler(customLogoutHandler)
+                        .logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler(HttpStatus.OK))
+                )
+
+                // JWT 필터
+                .addFilterBefore(new JwtFilter(jwtUtil, cookieUtil), LogoutFilter.class)
         ;
+
         return http.build();
     }
 }

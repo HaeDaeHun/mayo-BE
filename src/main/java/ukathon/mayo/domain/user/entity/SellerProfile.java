@@ -2,6 +2,7 @@ package ukathon.mayo.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ukathon.mayo.domain.matching.Region;
@@ -11,7 +12,7 @@ import ukathon.mayo.domain.reference.Channel;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class BusinessProfile {
+public class SellerProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -40,5 +41,17 @@ public class BusinessProfile {
 
     @Column(nullable = false)
     private boolean isVerified;
+
+    @Builder
+    public SellerProfile(Long id, User user, String storeName, Category category, Region storeRegion, String address, Channel preferredChannel, boolean isVerified) {
+        this.id = id;
+        this.user = user;
+        this.storeName = storeName;
+        this.category = category;
+        this.storeRegion = storeRegion;
+        this.address = address;
+        this.preferredChannel = preferredChannel;
+        this.isVerified = isVerified;
+    }
 }
 

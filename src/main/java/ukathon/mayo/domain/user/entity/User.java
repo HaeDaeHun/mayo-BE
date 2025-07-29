@@ -45,5 +45,9 @@ public class User {
         this.gender = gender;
         this.createdAt = createdAt;
     }
+
+    public void changeRole(Role newRole) {
+        this.role = newRole;
+    }
 }
 

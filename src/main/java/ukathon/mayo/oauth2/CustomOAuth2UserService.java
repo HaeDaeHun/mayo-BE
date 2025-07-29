@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ukathon.mayo.domain.user.entity.Role;
 import ukathon.mayo.domain.user.entity.User;
-import ukathon.mayo.domain.user.UserRepository;
+import ukathon.mayo.domain.user.repository.UserRepository;
 
 import java.util.Map;
 import java.util.Optional;
