@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ukathon.mayo.domain.matching.Region;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -30,5 +33,8 @@ public class MarketerProfile {
 
     @Column(nullable = false)
     private int marketingCount;
+
+    @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MarketerTag> marketerTagList = new ArrayList<>();
 }
 

@@ -29,16 +29,20 @@ public class User {
     @Column(nullable = false)
     private Role role;
 
+    @Column
+    private String gender;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
     @Builder
-    public User(Long id, String email, String password, String nickname, Role role, LocalDateTime createdAt) {
+    public User(Long id, String email, String password, String nickname, Role role, String gender, LocalDateTime createdAt) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.nickname = nickname;
         this.role = role;
+        this.gender = gender;
         this.createdAt = createdAt;
     }
 }
