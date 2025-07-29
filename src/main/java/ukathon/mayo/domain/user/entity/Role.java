@@ -2,5 +2,6 @@ package ukathon.mayo.domain.user.entity;
 
 public enum Role {
     MARKETER,
-    SELLER
+    SELLER,
+    DEFAULT // 임시
 }

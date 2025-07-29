@@ -107,11 +107,12 @@ public class SecurityConfig {
                 .headers(header -> header
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .oauth2Login(oauth -> oauth
-                        .authorizationEndpoint(a -> a.baseUri("/oauth2/authorize/kakao"))
-                        .redirectionEndpoint(r -> r.baseUri("/login/oauth2/code/kakao"))
+                        .authorizationEndpoint(a -> a.baseUri("/oauth2/authorization"))
+                        .redirectionEndpoint(r -> r.baseUri("/login/oauth2/code/*"))
                         .userInfoEndpoint(u -> u.userService(oAuth2UserService))
                         .successHandler(oAuth2SuccessHandler)
-                        .failureHandler(oAuth2FailureHandler)
+
+     .failureHandler(oAuth2FailureHandler)
                 )
                 // 인증 예외 핸들링
                 .exceptionHandling(e -> e

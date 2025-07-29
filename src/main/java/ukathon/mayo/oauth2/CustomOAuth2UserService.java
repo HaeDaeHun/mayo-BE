@@ -12,13 +12,14 @@ import ukathon.mayo.domain.user.entity.User;
 import ukathon.mayo.domain.user.UserRepository;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final UserRepository userRepository;
-    private final HttpServletRequest httpRequest;   // 주입
+    private final HttpServletRequest httpRequest;
 
     @Override
     @Transactional
@@ -26,23 +27,38 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         Map<String, Object> attrs = super.loadUser(userRequest).getAttributes();
         OAuth2Attributes oAuth2Attrs = OAuth2Attributes.of("kakao", attrs);
 
-        // 세션에서 role 꺼내기
+        // 1) 세션에서 role 가져오기
         String roleStr = (String) httpRequest.getSession().getAttribute("selectedRole");
-        Role role = Role.valueOf(roleStr);
+        Role role = Role.DEFAULT;
+        if (roleStr != null && !roleStr.isBlank()) {
+            try {
+                role = Role.valueOf(roleStr);
+            } catch (IllegalArgumentException ignored) {
+            }
+        }
 
-        User user = userRepository.findByEmail(oAuth2Attrs.getEmail())
-                .orElseGet(() -> {
-                    oAuth2Attrs.setFirstLogin(true);
-                    String nickname = generateUniqueNickname();
-                    User newUser = oAuth2Attrs.toEntity(nickname, role);
-                    return userRepository.save(newUser);
-                });
+        // 2) 이메일로 기존 사용자 찾기
+        Optional<User> optionalUser = userRepository.findByEmail(oAuth2Attrs.getEmail());
 
+        // 3) firstLogin 플래그 및 User 엔티티 결정
+        boolean firstLogin;
+        User user;
+        if (optionalUser.isPresent()) {
+            firstLogin = false;
+            user = optionalUser.get();
+        } else {
+            firstLogin = true;
+            String nickname = generateUniqueNickname();
+            User newUser = oAuth2Attrs.toEntity(nickname, role);
+            user = userRepository.save(newUser);
+        }
+
+        // 4) OAuth2UserDetails 생성 시 firstLogin 전달
         return new OAuth2UserDetails(
                 attrs,
                 "id",
                 user.getEmail(),
-                oAuth2Attrs.isNewUser(),
+                firstLogin,
                 user.getRole().name(),
                 user.getId()
         );
@@ -55,7 +71,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         };
         String suffixChars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String nickname;
-
         do {
             String prefix = prefixes[(int)(Math.random() * prefixes.length)];
             StringBuilder suffix = new StringBuilder();
@@ -65,7 +80,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             }
             nickname = (prefix + suffix).substring(0, MAX_LEN);
         } while (userRepository.existsByNickname(nickname));
-
         return nickname;
     }
+
 }

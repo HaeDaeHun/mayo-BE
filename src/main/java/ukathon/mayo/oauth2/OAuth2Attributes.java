@@ -38,6 +38,7 @@ public class OAuth2Attributes {
         return User.builder()
                 .email(this.email)
                 .password("")
+                .nickname(nickname)
                 .role(role)
                 .createdAt(LocalDateTime.now())
                 .build();
