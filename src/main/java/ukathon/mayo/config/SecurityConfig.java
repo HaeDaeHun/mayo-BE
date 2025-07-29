@@ -65,6 +65,7 @@ public class SecurityConfig {
                 "http://localhost:3000",
                 "https://localhost:3000",
                 "http://localhost:3001",
+                "https://mayo-fe.vercel.app",
                 "https://api.mayo.n-e.kr",
                 "http://mayo.n-e.kr",
                 "https://mayo.n-e.kr")); // TODO: 추후 변경 필요
