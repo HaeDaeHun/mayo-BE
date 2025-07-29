@@ -21,7 +21,7 @@ public class MarketerTag {
     @JoinColumn(name = "profile_id", nullable = false)
     private MarketerProfile profile;
 
-    public SkillTag(String name, MarketerProfile profile) {
+    public MarketerTag(String name, MarketerProfile profile) {
         this.name = name;
         this.profile = profile;
     }
