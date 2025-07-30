@@ -1,4 +1,4 @@
-package ukathon.mayo.domain.reference;
+package ukathon.mayo.domain.reference.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

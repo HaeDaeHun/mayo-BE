@@ -6,8 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ukathon.mayo.domain.matching.Region;
-import ukathon.mayo.domain.reference.Category;
-import ukathon.mayo.domain.reference.Channel;
+import ukathon.mayo.domain.reference.entity.Category;
+import ukathon.mayo.domain.reference.entity.Channel;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
