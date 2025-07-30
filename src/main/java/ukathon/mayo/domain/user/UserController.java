@@ -8,7 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.Operation;
 import ukathon.mayo.domain.user.dto.OnboardingRequestDto;
 
-@Tag(name = "user", description = "유저 관련 API입니다.")
+@Tag(name = "User", description = "유저 관련 API입니다.")
 @RestController
 @RequestMapping("/onboarding")
 @RequiredArgsConstructor
