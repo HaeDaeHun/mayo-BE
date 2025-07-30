@@ -23,7 +23,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
     private static final String OAUTH_PATH = "/api/oauth";
     private static final String ONBOARDING_PATH = "/onboarding";
-    private static final String DEPLOYED_REDIRECT_URL = "https://mayo-fe.vercel.app"; // TODO: 운영 도메인 변경
+    private static final String DEPLOYED_REDIRECT_URL = "https://mayo-fe.vercel.app/onboarding/Type"; // TODO: 운영 도메인 변경
     private static final List<String> ALLOWED_REDIRECT_URLS = List.of(
             "http://localhost:3000",
             "http://localhost:8080"
